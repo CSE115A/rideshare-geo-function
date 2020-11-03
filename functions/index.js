@@ -8,7 +8,8 @@ exports.GeoTest = functions.https.onRequest((request, response) =>{
     try{
         // read body
         let address = request.body.address;
-        let arr = address.split(' ');
+        let param = address.replace(' ','+');
+        
         
     } catch (err){
         // invalid request body
