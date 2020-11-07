@@ -8,8 +8,7 @@ exports.GeoTest = functions.https.onRequest(async (request, response) =>{
     let apikey = functions.config().location.key
     let bodyResp = {}
     try{
-        let address = request.body.address;
-        let param = address.split(' ').join('+');
+        let address = request.query.address;
         await axios.get(url,{
             params: {
                 address: address,
