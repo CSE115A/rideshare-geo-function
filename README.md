@@ -47,3 +47,42 @@ For Example:
 
 ## Response
 
+All responses follow this format
+```json
+{
+    "error" : boolean,
+    "status" : status_code,
+    "message" : response_body
+}
+```
+
+### Bad Request
+```json
+{
+    "error" : true,
+    "status" : 400,
+    "message" : "Params Error: missing or incorrect address format"
+}
+```
+### Internal Server Error
+```json
+{
+    "error" : true,
+    "status" : 500,
+    "message" : "Internal Server Error, try again"
+}
+``` 
+### Successful Response
+```json
+{
+    "error" : false,
+    "status" : 200,
+    "message" : {
+        "geo": {
+             "lat": latitude,
+             "lng": longitude
+         },
+         "id": "place_id"
+    }
+}
+```
