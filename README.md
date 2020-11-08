@@ -50,9 +50,9 @@ For Example:
 All responses follow this format
 ```json
 {
-    "error" : boolean,
-    "status" : status_code,
-    "message" : response_body
+    "error" : "BOOLEAN",
+    "status" : "STATUS_CODE",
+    "message" : "RESPONSE_BODY"
 }
 ```
 
@@ -79,8 +79,8 @@ All responses follow this format
     "status" : 200,
     "message" : {
         "geo": {
-             "lat": latitude,
-             "lng": longitude
+             "lat": "latitude",
+             "lng": "longitude"
          },
          "id": "place_id"
     }
