@@ -70,3 +70,6 @@ node_modules/
 
 # firebase environment variables
 .runtimeconfig.json
+
+# test stuff
+cse115a-servicekey.json
