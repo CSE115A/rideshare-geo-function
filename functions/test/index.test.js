@@ -1,14 +1,43 @@
-/* test/index.test.js*/
+const { expect } = require("chai");
+const { getGeo } = require("../index");
+const mockConfig = require("firebase-functions-test")();
 
-const { expect } = require('chai');
-var getGeo = require('functions/index.js');
-var assert = require('chai').expect;
+const request = {};
 
-describe('#getGeo()', function{
-    context('with arguments', function() {
-        it('should return 200', function() {
-            expect(getGeo().to.equal(200)
-        })
+const response = {
+    status: (status) =>{
+        response.statusCode = status;
+        return response;
+    },
+    send: ({ error, status, message }) => {
+        response.body = {
+          error: error,
+          status: status,
+          message: message,
+        };
+        return response;
+    },
+    set: () => {},
+};
+
+describe("Get geolcation", () => {
+    beforeEach( () => {
+        request.query = {
+            address: '1600 Amphitheatre Parkway, Mountain View, CA'
+        }
+    })
+    it("returns 200 message with body", async () => {
+        await getGeo(request,response);
+        expect(response.statusCode).equal(200);
+    });
+});
+
+describe("Error", () => {
+    beforeEach( () => {
+        request.query = { address: "" };
+    })
+    it('returns 400 internal server error', async () => {
+        await getGeo(request,response);
+        expect(response.statusCode).equal(500);
     })
 })
-
