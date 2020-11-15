@@ -20,24 +20,43 @@ const response = {
     set: () => {},
 };
 
-describe("Get geolcation", () => {
+describe("Calling getGeo with proper params", () => {
     beforeEach( () => {
         request.query = {
             address: '1600 Amphitheatre Parkway, Mountain View, CA'
         }
     })
-    it("returns 200 message with body", async () => {
+    it("Returns 200 with proper body", async () => {
         await getGeo(request,response);
         expect(response.statusCode).equal(200);
     });
 });
 
-describe("Error", () => {
+describe("undefined query", () => {
     beforeEach( () => {
-        request.query = { address: "" };
+        request.query = { undefined };
     })
-    it('returns 400 internal server error', async () => {
+    it('returns 400 incorrect fields', async () => {
         await getGeo(request,response);
+        expect(response.statusCode).equal(400);
+    })
+});
+describe("Missing API key", () => {
+    beforeEach( () => {
+        mockConfig.mockConfig({
+            location: { key: "fake"},
+        });
+        request.query = { address: "1600 Amphitheatre Parkway, Mountain View, CA"};
+    })
+    it('Returns 500 Internal Server Error', async () => {
+        await getGeo(request, response);
         expect(response.statusCode).equal(500);
+    })
+});
+
+describe("Missing Query", () => {
+    it('Returns 400 improper request', async () => {
+        await getGeo({},response);
+        expect(response.statusCode).equal(400);
     })
 })
