@@ -42,6 +42,7 @@ exports.getGeo = functions.https.onRequest(async (request, response) =>{
     })
     .catch ( (err) => {
         // incorrect address format
+        console.error(err);
         return response.status(400).send({
             error: true,
             status: 400,
