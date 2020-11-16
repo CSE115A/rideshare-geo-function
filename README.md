@@ -1,6 +1,12 @@
-# rideshare-geo-function
+# Firebase getGeo function
 ---
-converts address to geo location
+Maps address to longitude and latitude values.
+
+# Production Dependecies
+
+- [`axios`](https://github.com/axios/axios)
+- [`firebase-functions`](https://github.com/firebase/firebase-functions)
+- [`Geocoding API`](https://developers.google.com/maps/documentation/geocoding/overview)
 
 # Setup
 Go to `./functions` folder and run command `yarn`.
