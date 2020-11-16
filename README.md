@@ -2,13 +2,13 @@
 ---
 Maps address to longitude and latitude values.
 
-# Production Dependecies
+## Production Dependecies
 
 - [`axios`](https://github.com/axios/axios)
 - [`firebase-functions`](https://github.com/firebase/firebase-functions)
 - [`Geocoding API`](https://developers.google.com/maps/documentation/geocoding/overview)
 
-# Setup
+## Setup
 Go to `./functions` folder and run command `yarn`.
 
 In [`/functions`](./functions) directory start [emulator](https://firebase.google.com/docs/emulator-suite)
@@ -17,7 +17,7 @@ by running the command
 `yarn serve` 
 
 
-# Environment Variables
+## Environment Variables
 
 ```json
 {
@@ -31,7 +31,7 @@ Environemnt variables can be installed by running the command
 
 These variables allow us to gain access to [GeoCoding API](https://developers.google.com/maps/documentation/geocoding/start)
 
-# Schemas
+## Schemas
 
 ## Request
 ```
