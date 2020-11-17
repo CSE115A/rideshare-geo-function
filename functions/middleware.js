@@ -13,7 +13,10 @@ exports.getGeocodes = async ({ functions, address }) => {
     })
     .then((resp) => {
       if (resp.data.status === "REQUEST_DENIED") {
-        return Promise.reject(new Error(`Google Error: ${resp.data.status}`));
+        return Promise.resolve({
+          status: 500,
+          message: "Invalid API Key!",
+        });
       }
 
       return Promise.resolve({
