@@ -4,7 +4,7 @@ const { getGeocodes } = require("./middleware");
 exports.getGeo = functions.https.onRequest(async (request, response) => {
   const address = request.query.address;
 
-  if (address === undefined || address === "") {
+  if (Object.keys(request.query).length === 0 || address === "") {
     return response.status(400).send({
       error: true,
       status: 400,
