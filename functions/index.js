@@ -1,5 +1,5 @@
 const functions = require("firebase-functions");
-const { getGeocodes } = require("./middleware");
+const { getGoogleCodes } = require("./middleware");
 
 exports.getGeo = functions.https.onRequest(async (request, response) => {
   const address = request.query.address;
@@ -12,7 +12,7 @@ exports.getGeo = functions.https.onRequest(async (request, response) => {
     });
   }
 
-  return await getGeocodes({ functions, address })
+  return await getGoogleCodes({ functions, address })
     .then((res) => {
       return response.status(res.status).send({
         error: res.status > 200,

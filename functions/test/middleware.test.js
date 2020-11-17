@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
 const axios = require("axios");
-const { getGeocodes } = require("../middleware");
+const { getGoogleCodes } = require("../middleware");
 const { functions } = require("./constants");
 jest.mock("axios");
 
@@ -13,7 +13,7 @@ describe("Middleware Testing Suite", () => {
       }),
     );
     it("resolves the promise with a 500 error", async () => {
-      const promiseResponse = await getGeocodes({ functions, address });
+      const promiseResponse = await getGoogleCodes({ functions, address });
       expect(promiseResponse.status).toEqual(500);
       expect(promiseResponse.message).toBe("Invalid API Key!");
     });
@@ -26,7 +26,7 @@ describe("Middleware Testing Suite", () => {
       }),
     );
     it("rejects the promise with another 500 error", async () => {
-      return expect(getGeocodes({ functions, address })).rejects.toThrow(
+      return expect(getGoogleCodes({ functions, address })).rejects.toThrow(
         "Internal Server Error",
       );
     });
@@ -46,7 +46,7 @@ describe("Middleware Testing Suite", () => {
       }),
     );
     it("returns a successful resolved promise", async () => {
-      const promiseResponse = await getGeocodes({ functions, address });
+      const promiseResponse = await getGoogleCodes({ functions, address });
       expect(promiseResponse.status).toEqual(200);
       expect(promiseResponse.message).toStrictEqual({
         geo: { lat: 37.6430412, lng: -95.4604032 },

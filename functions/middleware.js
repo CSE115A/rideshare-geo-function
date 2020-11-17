@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-exports.getGeocodes = async ({ functions, address }) => {
+async function getGoogleCodes({ functions, address }) {
   const locationEndpoint = functions.config().location.endpoint;
   const apiKey = functions.config().location.key;
 
@@ -32,4 +32,6 @@ exports.getGeocodes = async ({ functions, address }) => {
         new Error(`Google Error: ${err.response.data.error_message}`),
       );
     });
-};
+}
+
+module.exports = { getGoogleCodes };

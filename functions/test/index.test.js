@@ -1,5 +1,6 @@
-const { expect } = require("chai");
 const { getGeo } = require("../index");
+const { getGoogleCodes } = require("../middleware");
+jest.mock("../middleware");
 const mockConfig = require("firebase-functions-test")();
 
 const request = {};
@@ -20,43 +21,76 @@ const response = {
   set: () => {},
 };
 
-describe("Calling getGeo with proper params", () => {
-  beforeEach(() => {
+describe("getGeo Testing Suite", () => {
+  afterEach(() => {
+    response.status().send({ undefined });
+  });
+  describe("when given proper params", () => {
+    getGoogleCodes.mockImplementationOnce(() =>
+      Promise.resolve({
+        status: 200,
+        message: { geo: { lat: 37.6430412, lng: -95.4604032 }, id: "1234" },
+      }),
+    );
     request.query = {
       address: "1600 Amphitheatre Parkway, Mountain View, CA",
     };
-  });
-  it("Returns 200 with proper body", async () => {
-    await getGeo(request, response);
-    expect(response.statusCode).equal(200);
-  });
-});
 
-describe("undefined query", () => {
-  beforeEach(() => {
-    request.query = { undefined };
-  });
-  it("returns 400 incorrect fields", async () => {
-    await getGeo(request, response);
-    expect(response.statusCode).equal(400);
-  });
-});
-describe("Missing API key", () => {
-  beforeEach(() => {
-    mockConfig.mockConfig({
-      location: { key: "fake" },
+    it("returns 200 OK with proper body", async () => {
+      await getGeo(request, response);
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.error).toBeFalsy();
+      expect(response.body.status).toEqual(200);
+      expect(response.body.message).toEqual({
+        geo: { lat: 37.6430412, lng: -95.4604032 },
+        id: "1234",
+      });
     });
-    request.query = { address: "1600 Amphitheatre Parkway, Mountain View, CA" };
   });
-  it("Returns 500 Internal Server Error", async () => {
-    await getGeo(request, response);
-    expect(response.statusCode).equal(500);
-  });
-});
 
-describe("Missing Query", () => {
-  it("Returns 400 improper request", async () => {
-    await getGeo({}, response);
-    expect(response.statusCode).equal(400);
+  describe("when query is undefined", () => {
+    request.query = { undefined };
+    getGoogleCodes.mockImplementation(() =>
+      Promise.resolve({ status: 400, message: "Improper Params" }),
+    );
+    it("returns 400 BAD REQUEST error with correct fields", async () => {
+      await getGeo(request, response);
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.error).toBeTruthy();
+      expect(response.body.status).toEqual(400);
+      expect(response.body.message).toBe("Improper Params");
+    });
+  });
+
+  describe("when API key is unset", () => {
+    mockConfig.mockConfig({
+      location: {},
+    });
+    request.query = {
+      address: "1600 Amphitheatre Parkway, Mountain View, CA",
+    };
+    getGoogleCodes.mockImplementation(() =>
+      Promise.reject(new Error("Internal Server Error")),
+    );
+    it("returns 500 Internal Server Error", async () => {
+      await getGeo(request, response);
+      expect(response.statusCode).toEqual(500);
+      expect(response.body.error).toBeTruthy();
+      expect(response.body.status).toEqual(500);
+      expect(response.body.message).toBe("Internal Server Error");
+    });
+  });
+
+  describe("when query is missing", () => {
+    request.query = {};
+    it("returns 400 BAD REQUEST with appropriate body", async () => {
+      await getGeo(request, response);
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.error).toBeTruthy();
+      expect(response.body.status).toEqual(400);
+      expect(response.body.message).toBe(
+        "Params Error: missing or incorrect address format",
+      );
+    });
   });
 });
