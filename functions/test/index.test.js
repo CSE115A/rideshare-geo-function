@@ -22,21 +22,25 @@ const response = {
 };
 
 describe("getGeo Testing Suite", () => {
-  afterEach(() => {
+  beforeEach(() => {
     response.status().send({ undefined });
+    jest.resetAllMocks();
   });
   describe("when given proper params", () => {
-    getGoogleCodes.mockImplementationOnce(() =>
-      Promise.resolve({
-        status: 200,
-        message: { geo: { lat: 37.6430412, lng: -95.4604032 }, id: "1234" },
-      }),
-    );
-    request.query = {
-      address: "1600 Amphitheatre Parkway, Mountain View, CA",
-    };
-
+    beforeEach(() => {
+      response.status().send({ undefined });
+      jest.resetAllMocks();
+    });
     it("returns 200 OK with proper body", async () => {
+      getGoogleCodes.mockImplementationOnce(() =>
+        Promise.resolve({
+          status: 200,
+          message: { geo: { lat: 37.6430412, lng: -95.4604032 }, id: "1234" },
+        }),
+      );
+      request.query = {
+        address: "1600 Amphitheatre Parkway, Mountain View, CA",
+      };
       await getGeo(request, response);
       expect(response.statusCode).toEqual(200);
       expect(response.body.error).toBeFalsy();
@@ -49,11 +53,15 @@ describe("getGeo Testing Suite", () => {
   });
 
   describe("when query is undefined", () => {
-    request.query = { undefined };
-    getGoogleCodes.mockImplementation(() =>
-      Promise.resolve({ status: 400, message: "Improper Params" }),
-    );
+    beforeEach(() => {
+      response.status().send({ undefined });
+      jest.resetAllMocks();
+    });
     it("returns 400 BAD REQUEST error with correct fields", async () => {
+      request.query = { undefined };
+      getGoogleCodes.mockImplementationOnce(() =>
+        Promise.resolve({ status: 400, message: "Improper Params" }),
+      );
       await getGeo(request, response);
       expect(response.statusCode).toEqual(400);
       expect(response.body.error).toBeTruthy();
@@ -63,16 +71,20 @@ describe("getGeo Testing Suite", () => {
   });
 
   describe("when API key is unset", () => {
-    mockConfig.mockConfig({
-      location: {},
+    beforeEach(() => {
+      response.status().send({ undefined });
+      jest.resetAllMocks();
     });
-    request.query = {
-      address: "1600 Amphitheatre Parkway, Mountain View, CA",
-    };
-    getGoogleCodes.mockImplementation(() =>
-      Promise.reject(new Error("Internal Server Error")),
-    );
     it("returns 500 Internal Server Error", async () => {
+      mockConfig.mockConfig({
+        location: {},
+      });
+      request.query = {
+        address: "1600 Amphitheatre Parkway, Mountain View, CA",
+      };
+      getGoogleCodes.mockImplementationOnce(() =>
+        Promise.reject(new Error("Internal Server Error")),
+      );
       await getGeo(request, response);
       expect(response.statusCode).toEqual(500);
       expect(response.body.error).toBeTruthy();
@@ -82,8 +94,12 @@ describe("getGeo Testing Suite", () => {
   });
 
   describe("when query is missing", () => {
-    request.query = {};
+    beforeEach(() => {
+      response.status().send({ undefined });
+      jest.resetAllMocks();
+    });
     it("returns 400 BAD REQUEST with appropriate body", async () => {
+      request.query = {};
       await getGeo(request, response);
       expect(response.statusCode).toEqual(400);
       expect(response.body.error).toBeTruthy();
